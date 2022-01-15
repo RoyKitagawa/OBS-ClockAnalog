@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="./../lib/jquery-3.6.0.min.js"></script>
+    <script src="./../lib/jquery.transit.min.js"></script>
+
+
+    <!-- DateTime JS  -->
+    <script src="./../js/localDate.js"></script>
+    <script src="./../js/settings.js"></script>
+
+</head>
+
+<body>
+    <div id="clockArea">
+        <img id="clockBG" src="./../images/ClockBG.png" style="display: none;">
+        <img id="clockSec" src="./../images/ClockSeconds.png" style="display: none;">
+        <img id="clockMinutes" src="./../images/ClockMinutes.png" style="display: none;">
+        <img id="clockHour" src="./../images/ClockHour.png" style="display: none;">
+
+        <!-- <img id="clockBG" src="./../images/ClockBG.png" style="position: fixed; left: 0px; top: 0px;">
+        <img id="clockSec" src="./../images/ClockSeconds.png"
+            style="position: fixed; left: -44px; top: 229px; transform:rotate(200deg);">
+        <img id="clockMinutes" src="./../images/ClockMinutes.png" style="position: fixed; left: -44px; top: 229px;">
+        <img id="clockHour" src="./../images/ClockHour.png"
+            style="position: fixed; left: -44px; top: 229px; transform:rotate(90deg);"> -->
+    </div>
+
+    <script>
+        var clockBG = document.getElementById("clockBG");
+        var clockSeconds = document.getElementById("clockSec");
+        var clockMinutes = document.getElementById("clockMinutes");
+        var clockHour = document.getElementById("clockHour");
+
+        var clockBGWidth = -1;
+        var clockBGHeight = -1;
+        var clockHourWidth = -1;
+        var clockHourHeight = -1;
+        var clockMinutesWidth = -1;
+        var clockMinutesHeight = -1;
+        var clockSecondsWidth = -1;
+        var clockSecondsHeight = -1;
+
+        var attrStyle = "style";
+        var styleBGBase = "";
+        var styleSecondsBase = "";
+        var styleMinutesBase = "";
+        var styleHourBase = "";
+
+        function startClockDisplay() {
+            // maxWidth = clockBGWidth > clockHourWidth ? clockBGWidth
+            //     : clockHourWidth > clockMinutesWidth ? clockHourWidth
+            //         : clockMinutesWidth > clockSecondsWidth ? clockMinutesWidth : clockSecondsWidth;
+            // maxHeight = clockBGHeight > clockHourHeight ? clockBGHeight
+            //     : clockHourHeight > clockMinutesHeight ? clockHourHeight
+            //         : clockMinutesHeight > clockSecondsHeight ? clockMinutesHeight : clockSecondsHeight;
+
+            // 時計 = 512 * 512 -> 256 * 256
+            // 針 = 600 * 50 -> 300 * 25
+
+            // 針 Left: (512 / 2) - (600 / 2) = 256 - 300 = -44 
+            // 針 Top: (512 / 2) - (50 / 2) = 256 - 25 = 229
+
+            let clockWidthHalf = clockBGWidth / 2;
+            let clockHeightHalf = clockBGHeight / 2;
+
+            // 実際の配置座標計算
+            let bgLeft = 0; // 時計は原則初期位置固定。針の長さなどによって針が見切れる場合などは後ほど座標を調整する
+            let bgTop = 0; // 時計は原則初期位置固定。針の長さなどによって針が見切れる場合などは後ほど座標を調整する
+            let hourLeft = clockWidthHalf - (clockHourWidth / 2);
+            let hourTop = clockHeightHalf - (clockHourHeight / 2);
+            let minutesLeft = clockWidthHalf - (clockMinutesWidth / 2);
+            let minutesTop = clockHeightHalf - (clockMinutesHeight / 2);
+            let secondsLeft = clockWidthHalf - (clockSecondsWidth / 2);
+            let secondsTop = clockHeightHalf - (clockSecondsHeight / 2);
+
+
+            // サイズ・座標移動値計算用
+            let hourNeedleSizeHalf = clockHourWidth > clockHourHeight ? clockHourWidth / 2 : clockHourHeight / 2;
+            let minutesNeedleSizeHalf = clockMinutesWidth > clockMinutesHeight ? clockMinutesWidth / 2 : clockMinutesHeight / 2;
+            let secondsNeedleSizeHalf = clockSecondsWidth > clockSecondsHeight ? clockSecondsWidth / 2 : clockSecondsHeight / 2;
+            var minLeft = 0;
+
+            // 針のサイズをふまえ、一番左、一番上になりえる座標を計算
+            let minHourLeft = clockWidthHalf - hourNeedleSizeHalf;
+            let minMinutesLeft = clockWidthHalf - minutesNeedleSizeHalf;
+            let minSecondsLeft = clockWidthHalf - secondsNeedleSizeHalf;
+            let minHourTop = clockHeightHalf - hourNeedleSizeHalf;
+            let minMinutesTop = clockHeightHalf - minutesNeedleSizeHalf;
+            let minSecondsTop = clockHeightHalf - secondsNeedleSizeHalf;
+
+            // 縦横の最小値計算（値がマイナスの場合は見切れるため全体的に座標をずらす）
+            var minLeft = bgLeft < minHourLeft ? bgLeft
+                : minHourLeft < minMinutesLeft ? minHourLeft
+                    : minMinutesLeft < minSecondsLeft ? minMinutesLeft : minSecondsLeft;
+            var minTop = bgTop < minHourTop ? bgTop
+                : minHourTop < minMinutesTop ? minHourTop
+                    : minMinutesTop < minSecondsTop ? minMinutesTop : minSecondsTop;
+
+            // var minLeft = bgLeft < hourLeft ? bgLeft
+            //     : hourLeft < minutesLeft ? hourLeft
+            //         : minutesLeft < secondsLeft ? minutesLeft : secondsLeft;
+            // var minTop = bgTop < hourTop ? bgTop
+            //     : hourTop < minutesTop ? hourTop
+            //         : minutesTop < secondsTop ? minutesTop : secondsTop;
+
+            if (minLeft < 0) {
+                bgLeft -= minLeft;
+                hourLeft -= minLeft;
+                minutesLeft -= minLeft;
+                secondsLeft -= minLeft;
+            }
+            if (minTop < 0) {
+                bgTop -= minTop;
+                hourTop -= minTop;
+                minutesTop -= minTop;
+                secondsTop -= minTop;
+            }
+
+            styleBGBase = "position: fixed; left: " + bgLeft + "px; top: " + bgTop + "px; ";
+            styleHourBase = "position: fixed; left: " + hourLeft + "px; top: " + hourTop + "px; ";
+            styleMinutesBase = "position: fixed; left: " + minutesLeft + "px; top: " + minutesTop + "px; ";
+            styleSecondsBase = "position: fixed; left: " + secondsLeft + "px; top: " + secondsTop + "px; ";
+
+            setInterval(function () {
+                updateClockDisplay();
+            }, 1)
+            updateClockDisplay();
+        }
+
+        function calcRot(_currentValue, _maxValue) {
+            let rotPerValue = 360 / _maxValue;
+            return (rotPerValue * _currentValue) - 90; // 針の初期画像は横向きなため、初期時を0時0分0秒とするには-45度する必要がある
+        }
+
+        function updateClockDisplay() {
+            let date = getLocalDate(timeDiffsInHour);
+
+
+            clockBG.setAttribute(attrStyle, styleBGBase);
+            console.log("Hour: " + date.getHours());
+            clockHour.setAttribute(attrStyle, styleHourBase + "transform:rotate(" + calcRot(date.getHours() % 12, 12) + "deg);");
+            console.log("Minutes: " + date.getMinutes());
+            clockMinutes.setAttribute(attrStyle, styleMinutesBase + "transform:rotate(" + calcRot(date.getMinutes(), 60) + "deg);");
+            console.log("Seconds: " + date.getSeconds());
+            clockSeconds.setAttribute(attrStyle, styleSecondsBase + "transform:rotate(" + calcRot(date.getSeconds(), 60) + "deg);");
+        }
+
+
+
+        $(function () {
+            initImgSizeInfo();
+
+
+
+
+
+            // var img = clockBG.getAttribute("src");
+            // let imgClockBG = new Image();
+            // image.src = "./../images/ClockBG.png";
+            // window.alert(img.width);
+
+            // setInterval(function () {
+            //     updateClockTimeDisplay();
+            // }, 100);
+
+            // 時計 = 512 * 512 -> 256 * 256
+            // 針 = 600 * 50 -> 300 * 25
+
+            // 針 Left: (512 / 2) - (600 / 2) = 256 - 300 = -44 
+            // 針 Top: (512 / 2) - (50 / 2) = 256 - 25 = 229
+
+
+            // 画像サイズを取得
+            // https://lab.syncer.jp/Web/JavaScript/Snippet/35/
+
+            // 時計の中央座標、各針のずらすピクセル数を取得
+            // 針を適当な角度にrotateして場所があってるか確認
+            // 問題なければlocalDateから時間取得して反映
+        });
+
+        function updateClockTimeDisplay() {
+            // var path = "./../images/ClockBG.png";
+            // var element = new Image();
+            // element.onload = function () {
+            //     console.log("aa: " + element.naturalWidth);
+
+            // }
+            // element.src = path;
+
+            // // let date = getLocalDate(_timeDiffInHour);
+
+            // var clockBG = document.getElementById("clockBG");
+            // var img = clockBG.getAttribute("src");
+            // // window.alert(img.width);
+        }
+
+        function initImgSizeInfo() {
+            // 時計背景
+            var clockBGPath = "./../images/ClockBG.png";
+            var clockBGElement = new Image();
+            clockBGElement.onload = function () {
+                clockBGWidth = clockBGElement.naturalWidth;
+                clockBGHeight = clockBGElement.naturalHeight;
+                if (isAllClockImageSizeSet()) {
+                    startClockDisplay();
+                }
+            }
+            clockBGElement.src = clockBGPath;
+
+            // 時計針：時間
+            var clockHourPath = "./../images/ClockHour.png";
+            var clockHourElement = new Image();
+            clockHourElement.onload = function () {
+                clockHourWidth = clockHourElement.naturalWidth;
+                clockHourHeight = clockHourElement.naturalHeight;
+                if (isAllClockImageSizeSet()) {
+                    startClockDisplay();
+                }
+            }
+            clockHourElement.src = clockHourPath;
+
+            // 時計針：分
+            var clockMinutesPath = "./../images/ClockMinutes.png";
+            var clockMinutesElement = new Image();
+            clockMinutesElement.onload = function () {
+                clockMinutesWidth = clockMinutesElement.naturalWidth;
+                clockMinutesHeight = clockMinutesElement.naturalHeight;
+                if (isAllClockImageSizeSet()) {
+                    startClockDisplay();
+                }
+            }
+            clockMinutesElement.src = clockMinutesPath;
+
+            // 時計針：秒
+            var clockSecondsPath = "./../images/ClockSeconds.png";
+            var clockSecondsElement = new Image();
+            clockSecondsElement.onload = function () {
+                clockSecondsWidth = clockSecondsElement.naturalWidth;
+                clockSecondsHeight = clockSecondsElement.naturalHeight;
+                if (isAllClockImageSizeSet()) {
+                    startClockDisplay();
+                }
+            }
+            clockSecondsElement.src = clockSecondsPath;
+        }
+
+        function isAllClockImageSizeSet() {
+            return clockBGWidth >= 0 && clockBGHeight >= 0
+                && clockHourWidth >= 0 && clockHourHeight >= 0
+                && clockMinutesWidth >= 0 && clockMinutesHeight >= 0
+                && clockSecondsWidth >= 0 && clockSecondsHeight >= 0;
+        }
+
+    </script>
+
+</body>
+
+</html>
