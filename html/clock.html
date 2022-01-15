@@ -8,7 +8,6 @@
     <title>Document</title>
 
     <script src="./../lib/jquery-3.6.0.min.js"></script>
-    <script src="./../lib/jquery.transit.min.js"></script>
 
 
     <!-- DateTime JS  -->
@@ -20,16 +19,9 @@
 <body>
     <div id="clockArea">
         <img id="clockBG" src="./../images/ClockBG.png" style="display: none;">
-        <img id="clockSec" src="./../images/ClockSeconds.png" style="display: none;">
-        <img id="clockMinutes" src="./../images/ClockMinutes.png" style="display: none;">
         <img id="clockHour" src="./../images/ClockHour.png" style="display: none;">
-
-        <!-- <img id="clockBG" src="./../images/ClockBG.png" style="position: fixed; left: 0px; top: 0px;">
-        <img id="clockSec" src="./../images/ClockSeconds.png"
-            style="position: fixed; left: -44px; top: 229px; transform:rotate(200deg);">
-        <img id="clockMinutes" src="./../images/ClockMinutes.png" style="position: fixed; left: -44px; top: 229px;">
-        <img id="clockHour" src="./../images/ClockHour.png"
-            style="position: fixed; left: -44px; top: 229px; transform:rotate(90deg);"> -->
+        <img id="clockMinutes" src="./../images/ClockMinutes.png" style="display: none;">
+        <img id="clockSec" src="./../images/ClockSeconds.png" style="display: none;">
     </div>
 
     <script>
@@ -53,154 +45,61 @@
         var styleMinutesBase = "";
         var styleHourBase = "";
 
-        function startClockDisplay() {
-            // maxWidth = clockBGWidth > clockHourWidth ? clockBGWidth
-            //     : clockHourWidth > clockMinutesWidth ? clockHourWidth
-            //         : clockMinutesWidth > clockSecondsWidth ? clockMinutesWidth : clockSecondsWidth;
-            // maxHeight = clockBGHeight > clockHourHeight ? clockBGHeight
-            //     : clockHourHeight > clockMinutesHeight ? clockHourHeight
-            //         : clockMinutesHeight > clockSecondsHeight ? clockMinutesHeight : clockSecondsHeight;
+        var rotPerHour = 360 / 12;
+        var rotPerMinutes = 360 / 60;
+        var rotPerSeconds = 360 / 60;
 
-            // 時計 = 512 * 512 -> 256 * 256
-            // 針 = 600 * 50 -> 300 * 25
+        $(function () {
+            // 時計の処理の起点
+            initImgSizeInfo();
+        });
 
-            // 針 Left: (512 / 2) - (600 / 2) = 256 - 300 = -44 
-            // 針 Top: (512 / 2) - (50 / 2) = 256 - 25 = 229
-
-            let clockWidthHalf = clockBGWidth / 2;
-            let clockHeightHalf = clockBGHeight / 2;
-
-            // 実際の配置座標計算
-            let bgLeft = 0; // 時計は原則初期位置固定。針の長さなどによって針が見切れる場合などは後ほど座標を調整する
-            let bgTop = 0; // 時計は原則初期位置固定。針の長さなどによって針が見切れる場合などは後ほど座標を調整する
-            let hourLeft = clockWidthHalf - (clockHourWidth / 2);
-            let hourTop = clockHeightHalf - (clockHourHeight / 2);
-            let minutesLeft = clockWidthHalf - (clockMinutesWidth / 2);
-            let minutesTop = clockHeightHalf - (clockMinutesHeight / 2);
-            let secondsLeft = clockWidthHalf - (clockSecondsWidth / 2);
-            let secondsTop = clockHeightHalf - (clockSecondsHeight / 2);
-
-
-            // サイズ・座標移動値計算用
-            let hourNeedleSizeHalf = clockHourWidth > clockHourHeight ? clockHourWidth / 2 : clockHourHeight / 2;
-            let minutesNeedleSizeHalf = clockMinutesWidth > clockMinutesHeight ? clockMinutesWidth / 2 : clockMinutesHeight / 2;
-            let secondsNeedleSizeHalf = clockSecondsWidth > clockSecondsHeight ? clockSecondsWidth / 2 : clockSecondsHeight / 2;
-            var minLeft = 0;
-
-            // 針のサイズをふまえ、一番左、一番上になりえる座標を計算
-            let minHourLeft = clockWidthHalf - hourNeedleSizeHalf;
-            let minMinutesLeft = clockWidthHalf - minutesNeedleSizeHalf;
-            let minSecondsLeft = clockWidthHalf - secondsNeedleSizeHalf;
-            let minHourTop = clockHeightHalf - hourNeedleSizeHalf;
-            let minMinutesTop = clockHeightHalf - minutesNeedleSizeHalf;
-            let minSecondsTop = clockHeightHalf - secondsNeedleSizeHalf;
-
-            // 縦横の最小値計算（値がマイナスの場合は見切れるため全体的に座標をずらす）
-            var minLeft = bgLeft < minHourLeft ? bgLeft
-                : minHourLeft < minMinutesLeft ? minHourLeft
-                    : minMinutesLeft < minSecondsLeft ? minMinutesLeft : minSecondsLeft;
-            var minTop = bgTop < minHourTop ? bgTop
-                : minHourTop < minMinutesTop ? minHourTop
-                    : minMinutesTop < minSecondsTop ? minMinutesTop : minSecondsTop;
-
-            // var minLeft = bgLeft < hourLeft ? bgLeft
-            //     : hourLeft < minutesLeft ? hourLeft
-            //         : minutesLeft < secondsLeft ? minutesLeft : secondsLeft;
-            // var minTop = bgTop < hourTop ? bgTop
-            //     : hourTop < minutesTop ? hourTop
-            //         : minutesTop < secondsTop ? minutesTop : secondsTop;
-
-            if (minLeft < 0) {
-                bgLeft -= minLeft;
-                hourLeft -= minLeft;
-                minutesLeft -= minLeft;
-                secondsLeft -= minLeft;
-            }
-            if (minTop < 0) {
-                bgTop -= minTop;
-                hourTop -= minTop;
-                minutesTop -= minTop;
-                secondsTop -= minTop;
-            }
-
-            styleBGBase = "position: fixed; left: " + bgLeft + "px; top: " + bgTop + "px; ";
-            styleHourBase = "position: fixed; left: " + hourLeft + "px; top: " + hourTop + "px; ";
-            styleMinutesBase = "position: fixed; left: " + minutesLeft + "px; top: " + minutesTop + "px; ";
-            styleSecondsBase = "position: fixed; left: " + secondsLeft + "px; top: " + secondsTop + "px; ";
-
-            setInterval(function () {
-                updateClockDisplay();
-            }, 1)
-            updateClockDisplay();
+        // 時計の描画更新処理
+        function updateClockDisplay() {
+            let date = getLocalDate(timeDiffsInHour);
+            // date.setMinutes(10);
+            clockHour.setAttribute(attrStyle, styleHourBase + "transform:rotate("
+                + (hourNeedleMovePattern == 0 ? calcHourNeedleRotSmooth(date) : calcBasicNeedleRot(date.getHours() % 12, 12))
+                + "deg);");
+            clockMinutes.setAttribute(attrStyle, styleMinutesBase + "transform:rotate("
+                + (minutesNeedleMovePattern == 0 ? calcMinutesNeedleRotSmooth(date) : calcBasicNeedleRot(date.getMinutes(), 60))
+                + "deg);");
+            clockSeconds.setAttribute(attrStyle, styleSecondsBase + "transform:rotate("
+                + (secondsNeedleMovePattern == 0 ? calcSecondsNeedleSmooth(date) : calcBasicNeedleRot(date.getSeconds(), 60))
+                + "deg);");
         }
 
-        function calcRot(_currentValue, _maxValue) {
+        // 各針の角度計算用
+        // 指定の秒/分/時間が来たら針が次の角度に進む汎用的な処理
+        function calcBasicNeedleRot(_currentValue, _maxValue) {
             let rotPerValue = 360 / _maxValue;
             return (rotPerValue * _currentValue) - 90; // 針の初期画像は横向きなため、初期時を0時0分0秒とするには-45度する必要がある
         }
 
-        function updateClockDisplay() {
-            let date = getLocalDate(timeDiffsInHour);
+        function calcHourNeedleRotSmooth(_date) {
+            return (rotPerHour * _date.getHours()) // 時間毎の針の角度
+                + (rotPerHour * _date.getMinutes() / 60) // 1時間のうち進んだ分数の割合分針を進める
+                + (rotPerHour * (_date.getSeconds() / 60 / 60)) // 1分のうち進んだ秒数の割合分針を進める
+                + (rotPerHour * (_date.getMilliseconds() / 60 / 60 / 1000)) // 1秒のうち進んだミリ秒数の割合分針を進める
+                - 90; // 針の初期画像は横向きなため、初期時を0時0分0秒とするには-45度する必要がある
+        }
 
-
-            clockBG.setAttribute(attrStyle, styleBGBase);
-            console.log("Hour: " + date.getHours());
-            clockHour.setAttribute(attrStyle, styleHourBase + "transform:rotate(" + calcRot(date.getHours() % 12, 12) + "deg);");
-            console.log("Minutes: " + date.getMinutes());
-            clockMinutes.setAttribute(attrStyle, styleMinutesBase + "transform:rotate(" + calcRot(date.getMinutes(), 60) + "deg);");
-            console.log("Seconds: " + date.getSeconds());
-            clockSeconds.setAttribute(attrStyle, styleSecondsBase + "transform:rotate(" + calcRot(date.getSeconds(), 60) + "deg);");
+        function calcMinutesNeedleRotSmooth(_date) {
+            return (rotPerMinutes * _date.getMinutes()) // 分毎の針の角度
+                + (rotPerMinutes * (_date.getSeconds() / 60)) // 1分のうち進んだ秒数の割合分針を進める
+                + (rotPerMinutes * (_date.getMilliseconds() / 60 / 1000)) // 1秒のうち進んだミリ秒数の割合分針を進める
+                - 90; // 針の初期画像は横向きなため、初期時を0時0分0秒とするには-45度する必要がある
         }
 
 
-
-        $(function () {
-            initImgSizeInfo();
-
-
-
-
-
-            // var img = clockBG.getAttribute("src");
-            // let imgClockBG = new Image();
-            // image.src = "./../images/ClockBG.png";
-            // window.alert(img.width);
-
-            // setInterval(function () {
-            //     updateClockTimeDisplay();
-            // }, 100);
-
-            // 時計 = 512 * 512 -> 256 * 256
-            // 針 = 600 * 50 -> 300 * 25
-
-            // 針 Left: (512 / 2) - (600 / 2) = 256 - 300 = -44 
-            // 針 Top: (512 / 2) - (50 / 2) = 256 - 25 = 229
-
-
-            // 画像サイズを取得
-            // https://lab.syncer.jp/Web/JavaScript/Snippet/35/
-
-            // 時計の中央座標、各針のずらすピクセル数を取得
-            // 針を適当な角度にrotateして場所があってるか確認
-            // 問題なければlocalDateから時間取得して反映
-        });
-
-        function updateClockTimeDisplay() {
-            // var path = "./../images/ClockBG.png";
-            // var element = new Image();
-            // element.onload = function () {
-            //     console.log("aa: " + element.naturalWidth);
-
-            // }
-            // element.src = path;
-
-            // // let date = getLocalDate(_timeDiffInHour);
-
-            // var clockBG = document.getElementById("clockBG");
-            // var img = clockBG.getAttribute("src");
-            // // window.alert(img.width);
+        function calcSecondsNeedleSmooth(_date) {
+            return (rotPerSeconds * _date.getSeconds())
+                + (rotPerSeconds * (_date.getMilliseconds() / 1000))
+                - 90; // 針の初期画像は横向きなため、初期時を0時0分0秒とするには-45度する必要がある
         }
 
+
+        // 各画像サイズ取得処理（座標計算に使うため、描画処理の前に必要）
         function initImgSizeInfo() {
             // 時計背景
             var clockBGPath = "./../images/ClockBG.png";
@@ -251,6 +150,7 @@
             clockSecondsElement.src = clockSecondsPath;
         }
 
+        // 全ての画像サイズが取得済みか確認する
         function isAllClockImageSizeSet() {
             return clockBGWidth >= 0 && clockBGHeight >= 0
                 && clockHourWidth >= 0 && clockHourHeight >= 0
@@ -258,6 +158,71 @@
                 && clockSecondsWidth >= 0 && clockSecondsHeight >= 0;
         }
 
+        // 時計の初回描画用の設定
+        function startClockDisplay() {
+
+            let clockWidthHalf = clockBGWidth / 2;
+            let clockHeightHalf = clockBGHeight / 2;
+
+            // 実際の配置座標計算
+            let bgLeft = 0; // 時計は原則初期位置固定。針の長さなどによって針が見切れる場合などは後ほど座標を調整する
+            let bgTop = 0; // 時計は原則初期位置固定。針の長さなどによって針が見切れる場合などは後ほど座標を調整する
+            let hourLeft = clockWidthHalf - (clockHourWidth / 2);
+            let hourTop = clockHeightHalf - (clockHourHeight / 2);
+            let minutesLeft = clockWidthHalf - (clockMinutesWidth / 2);
+            let minutesTop = clockHeightHalf - (clockMinutesHeight / 2);
+            let secondsLeft = clockWidthHalf - (clockSecondsWidth / 2);
+            let secondsTop = clockHeightHalf - (clockSecondsHeight / 2);
+
+
+            // サイズ・座標移動値計算用
+            let hourNeedleSizeHalf = clockHourWidth > clockHourHeight ? clockHourWidth / 2 : clockHourHeight / 2;
+            let minutesNeedleSizeHalf = clockMinutesWidth > clockMinutesHeight ? clockMinutesWidth / 2 : clockMinutesHeight / 2;
+            let secondsNeedleSizeHalf = clockSecondsWidth > clockSecondsHeight ? clockSecondsWidth / 2 : clockSecondsHeight / 2;
+            var minLeft = 0;
+
+            // 針のサイズをふまえ、一番左、一番上になりえる座標を計算
+            let minHourLeft = clockWidthHalf - hourNeedleSizeHalf;
+            let minMinutesLeft = clockWidthHalf - minutesNeedleSizeHalf;
+            let minSecondsLeft = clockWidthHalf - secondsNeedleSizeHalf;
+            let minHourTop = clockHeightHalf - hourNeedleSizeHalf;
+            let minMinutesTop = clockHeightHalf - minutesNeedleSizeHalf;
+            let minSecondsTop = clockHeightHalf - secondsNeedleSizeHalf;
+
+            // 縦横の最小値計算（値がマイナスの場合は見切れるため全体的に座標をずらす）
+            var minLeft = bgLeft < minHourLeft ? bgLeft
+                : minHourLeft < minMinutesLeft ? minHourLeft
+                    : minMinutesLeft < minSecondsLeft ? minMinutesLeft : minSecondsLeft;
+            var minTop = bgTop < minHourTop ? bgTop
+                : minHourTop < minMinutesTop ? minHourTop
+                    : minMinutesTop < minSecondsTop ? minMinutesTop : minSecondsTop;
+
+            if (minLeft < 0) {
+                bgLeft -= minLeft;
+                hourLeft -= minLeft;
+                minutesLeft -= minLeft;
+                secondsLeft -= minLeft;
+            }
+            if (minTop < 0) {
+                bgTop -= minTop;
+                hourTop -= minTop;
+                minutesTop -= minTop;
+                secondsTop -= minTop;
+            }
+
+            // 計算した座標を元にスタイルの基礎を定義
+            styleBGBase = "position: fixed; left: " + bgLeft + "px; top: " + bgTop + "px; ";
+            styleHourBase = "position: fixed; left: " + hourLeft + "px; top: " + hourTop + "px; ";
+            styleMinutesBase = "position: fixed; left: " + minutesLeft + "px; top: " + minutesTop + "px; ";
+            styleSecondsBase = "position: fixed; left: " + secondsLeft + "px; top: " + secondsTop + "px; ";
+
+            // 時計の更新処理
+            setInterval(function () {
+                updateClockDisplay();
+            }, 1)
+            clockBG.setAttribute(attrStyle, styleBGBase);
+            updateClockDisplay();
+        }
     </script>
 
 </body>
