@@ -18,13 +18,18 @@
 
 <body>
     <div id="clockArea">
-        <img id="clockBG" src="./../images/ClockBG.png" style="display: none;">
-        <img id="clockHour" src="./../images/ClockHour.png" style="display: none;">
-        <img id="clockMinutes" src="./../images/ClockMinutes.png" style="display: none;">
-        <img id="clockSec" src="./../images/ClockSeconds.png" style="display: none;">
+        <img id="clockBG" style="display: none;">
+        <img id="clockHour" style="display: none;">
+        <img id="clockMinutes" style="display: none;">
+        <img id="clockSec" style="display: none;">
     </div>
 
     <script>
+        const imgPathClockBG = imageDirPath + "/" + fileNameClockBG;
+        const imgPathClockHour = imageDirPath + "/" + fileNameClockHour;
+        const imgPathClockMinutes = imageDirPath + "/" + fileNameClockMinutes;
+        const imgPathClockSeconds = imageDirPath + "/" + fileNameClockSeconds;
+
         var clockBG = document.getElementById("clockBG");
         var clockSeconds = document.getElementById("clockSec");
         var clockMinutes = document.getElementById("clockMinutes");
@@ -52,6 +57,12 @@
         $(function () {
             // 時計の処理の起点
             initImgSizeInfo();
+
+            // 時計の各種画像の初期化処理
+            clockBG.setAttribute("src", imgPathClockBG);
+            clockHour.setAttribute("src", imgPathClockHour);
+            clockMinutes.setAttribute("src", imgPathClockMinutes);
+            clockSeconds.setAttribute("src", imgPathClockSeconds);
         });
 
         // 時計の描画更新処理
@@ -76,6 +87,7 @@
             return (rotPerValue * _currentValue) - 90; // 針の初期画像は横向きなため、初期時を0時0分0秒とするには-45度する必要がある
         }
 
+        // 時針をミリ秒単位でなめらかに回転させるための角度を計算
         function calcHourNeedleRotSmooth(_date) {
             return (rotPerHour * _date.getHours()) // 時間毎の針の角度
                 + (rotPerHour * _date.getMinutes() / 60) // 1時間のうち進んだ分数の割合分針を進める
@@ -84,6 +96,7 @@
                 - 90; // 針の初期画像は横向きなため、初期時を0時0分0秒とするには-45度する必要がある
         }
 
+        // 分針をミリ秒単位でなめらかに回転させるための角度を計算
         function calcMinutesNeedleRotSmooth(_date) {
             return (rotPerMinutes * _date.getMinutes()) // 分毎の針の角度
                 + (rotPerMinutes * (_date.getSeconds() / 60)) // 1分のうち進んだ秒数の割合分針を進める
@@ -91,39 +104,38 @@
                 - 90; // 針の初期画像は横向きなため、初期時を0時0分0秒とするには-45度する必要がある
         }
 
-
+        // 秒針をミリ秒単位でなめらかに回転させるための角度を計算
         function calcSecondsNeedleSmooth(_date) {
             return (rotPerSeconds * _date.getSeconds())
                 + (rotPerSeconds * (_date.getMilliseconds() / 1000))
                 - 90; // 針の初期画像は横向きなため、初期時を0時0分0秒とするには-45度する必要がある
         }
 
-
         // 各画像サイズ取得処理（座標計算に使うため、描画処理の前に必要）
         function initImgSizeInfo() {
             // 時計背景
-            getImageSize("./../images/ClockBG.png", function (_element) {
+            getImageSize(imgPathClockBG, function (_element) {
                 clockBGWidth = _element.naturalWidth;
                 clockBGHeight = _element.naturalHeight;
                 if (isAllClockImageSizeSet()) startClockDisplay();
             });
 
             // 時計針：時間
-            getImageSize("./../images/ClockHour.png", function (_element) {
+            getImageSize(imgPathClockHour, function (_element) {
                 clockHourWidth = _element.naturalWidth;
                 clockHourHeight = _element.naturalHeight;
                 if (isAllClockImageSizeSet()) startClockDisplay();
             });
 
             // 時計針：分
-            getImageSize("./../images/ClockMinutes.png", function (_element) {
+            getImageSize(imgPathClockMinutes, function (_element) {
                 clockMinutesWidth = _element.naturalWidth;
                 clockMinutesHeight = _element.naturalHeight;
                 if (isAllClockImageSizeSet()) startClockDisplay();
             });
 
             // 時計針：秒
-            getImageSize("./../images/ClockSeconds.png", function (_element) {
+            getImageSize(imgPathClockSeconds, function (_element) {
                 clockSecondsWidth = _element.naturalWidth;
                 clockSecondsHeight = _element.naturalHeight;
                 if (isAllClockImageSizeSet()) startClockDisplay();
@@ -196,11 +208,13 @@
             styleMinutesBase = "position: fixed; left: " + minutesLeft + "px; top: " + minutesTop + "px; ";
             styleSecondsBase = "position: fixed; left: " + secondsLeft + "px; top: " + secondsTop + "px; ";
 
+            // 時計背景は時間毎の角度計算が不要なため事前にstyle確定する
+            clockBG.setAttribute(attrStyle, styleBGBase);
+
             // 時計の更新処理
             setInterval(function () {
                 updateClockDisplay();
-            }, 1)
-            clockBG.setAttribute(attrStyle, styleBGBase);
+            }, 1);
             updateClockDisplay();
         }
     </script>

@@ -1,3 +1,4 @@
+// 指定の画像のサイズを取得する
 function getImageSize(_imgFilePath, _onComplete) {
     var element = document.createElement("img");
     element.addEventListener("load", function () {
@@ -7,14 +8,16 @@ function getImageSize(_imgFilePath, _onComplete) {
     element.src = _imgFilePath;
 }
 
+// 指定座標、指定サイズのキャンバスを生成して返す
 function createCanvasElement(_startX, _startY, _width, _height) {
     let canvasElement = document.createElement("canvas");
-    canvasElement.setAttribute("style", "position: fixed; left: " + _startX + "px; top: " + _startY + "px; border: 1px solid silver;");
+    canvasElement.setAttribute("style", "position: fixed; left: " + _startX + "px; top: " + _startY + "px; border: 1px solid silver; z-index: 1");
     canvasElement.setAttribute("width", _width + "px");
     canvasElement.setAttribute("height", _height + "px");
     return canvasElement;
 }
 
+// 指定キャンバス常時に赤線マーカーを引く
 function drawCrossOnCanvas(_canvasElement) {
     let canvasContext = _canvasElement.getContext("2d");
     canvasContext.strokeStyle = "red";

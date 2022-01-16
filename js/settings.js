@@ -40,3 +40,45 @@ const secondsNeedleMovePattern = 1;
 // 基準はUTCなため、日本の時差の場合は+9となります
 // 初期値は「9」（日本時間）が指定されています
 const timeDiffsInHour = 9;
+
+// 5. 画像フォルダの相対パス
+//
+// 上級者用
+// clock.htmlファイルから参照したい画像フォルダへの相対パスを指定してください
+// 例）imagesフォルダなら「"./../images"」、
+//     imagesフォルダ内に「MyClock」というフォルダを作成、指定する場合は「"./../images/MyClock"」となります
+//
+// 初期値は「"./../images"」が指定されています
+const imageDirPath = "./../images";
+
+// 6. 画像ファイル名：時計背景用
+//
+// 時計に使用する画像ファイル名を変更したい場合に指定してください
+// 該当画像は上記「画像フォルダの相対パス」で指定フォルダ内にある前提となります
+//
+// 初期値は「"ClockBG.png"」が指定されています
+const fileNameClockBG = "ClockBG.png"
+
+// 7. 画像ファイル名：時計時針用
+//
+// 時計に使用する画像ファイル名を変更したい場合に指定してください
+// 該当画像は上記「画像フォルダの相対パス」で指定フォルダ内にある前提となります
+//
+// 初期値は「"ClockHour.png"」が指定されています
+const fileNameClockHour = "ClockHour.png"
+
+// 8. 画像ファイル名：時計分針用
+//
+// 時計に使用する画像ファイル名を変更したい場合に指定してください
+// 該当画像は上記「画像フォルダの相対パス」で指定フォルダ内にある前提となります
+//
+// 初期値は「"ClockMinutes.png"」が指定されています
+const fileNameClockMinutes = "ClockMinutes.png"
+
+// 9. 画像ファイル名：時計秒針用
+//
+// 時計に使用する画像ファイル名を変更したい場合に指定してください
+// 該当画像は上記「画像フォルダの相対パス」で指定フォルダ内にある前提となります
+//
+// 初期値は「"ClockSeconds.png"」が指定されています
+const fileNameClockSeconds = "ClockSeconds.png"
