@@ -9,10 +9,10 @@
 
     <script src="./../lib/jquery-3.6.0.min.js"></script>
 
-
     <!-- DateTime JS  -->
     <script src="./../js/localDate.js"></script>
     <script src="./../js/settings.js"></script>
+    <script src="./../js/imageUtil.js"></script>
 
 </head>
 
@@ -102,52 +102,32 @@
         // 各画像サイズ取得処理（座標計算に使うため、描画処理の前に必要）
         function initImgSizeInfo() {
             // 時計背景
-            var clockBGPath = "./../images/ClockBG.png";
-            var clockBGElement = new Image();
-            clockBGElement.onload = function () {
-                clockBGWidth = clockBGElement.naturalWidth;
-                clockBGHeight = clockBGElement.naturalHeight;
-                if (isAllClockImageSizeSet()) {
-                    startClockDisplay();
-                }
-            }
-            clockBGElement.src = clockBGPath;
+            getImageSize("./../images/ClockBG.png", function (_element) {
+                clockBGWidth = _element.naturalWidth;
+                clockBGHeight = _element.naturalHeight;
+                if (isAllClockImageSizeSet()) startClockDisplay();
+            });
 
             // 時計針：時間
-            var clockHourPath = "./../images/ClockHour.png";
-            var clockHourElement = new Image();
-            clockHourElement.onload = function () {
-                clockHourWidth = clockHourElement.naturalWidth;
-                clockHourHeight = clockHourElement.naturalHeight;
-                if (isAllClockImageSizeSet()) {
-                    startClockDisplay();
-                }
-            }
-            clockHourElement.src = clockHourPath;
+            getImageSize("./../images/ClockHour.png", function (_element) {
+                clockHourWidth = _element.naturalWidth;
+                clockHourHeight = _element.naturalHeight;
+                if (isAllClockImageSizeSet()) startClockDisplay();
+            });
 
             // 時計針：分
-            var clockMinutesPath = "./../images/ClockMinutes.png";
-            var clockMinutesElement = new Image();
-            clockMinutesElement.onload = function () {
-                clockMinutesWidth = clockMinutesElement.naturalWidth;
-                clockMinutesHeight = clockMinutesElement.naturalHeight;
-                if (isAllClockImageSizeSet()) {
-                    startClockDisplay();
-                }
-            }
-            clockMinutesElement.src = clockMinutesPath;
+            getImageSize("./../images/ClockMinutes.png", function (_element) {
+                clockMinutesWidth = _element.naturalWidth;
+                clockMinutesHeight = _element.naturalHeight;
+                if (isAllClockImageSizeSet()) startClockDisplay();
+            });
 
             // 時計針：秒
-            var clockSecondsPath = "./../images/ClockSeconds.png";
-            var clockSecondsElement = new Image();
-            clockSecondsElement.onload = function () {
-                clockSecondsWidth = clockSecondsElement.naturalWidth;
-                clockSecondsHeight = clockSecondsElement.naturalHeight;
-                if (isAllClockImageSizeSet()) {
-                    startClockDisplay();
-                }
-            }
-            clockSecondsElement.src = clockSecondsPath;
+            getImageSize("./../images/ClockSeconds.png", function (_element) {
+                clockSecondsWidth = _element.naturalWidth;
+                clockSecondsHeight = _element.naturalHeight;
+                if (isAllClockImageSizeSet()) startClockDisplay();
+            });
         }
 
         // 全ての画像サイズが取得済みか確認する
