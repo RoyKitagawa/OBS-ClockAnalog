@@ -6,3 +6,28 @@ function getImageSize(_imgFilePath, _onComplete) {
     });
     element.src = _imgFilePath;
 }
+
+function createCanvasElement(_startX, _startY, _width, _height) {
+    let canvasElement = document.createElement("canvas");
+    canvasElement.setAttribute("style", "position: fixed; left: " + _startX + "px; top: " + _startY + "px; border: 1px solid silver;");
+    canvasElement.setAttribute("width", _width + "px");
+    canvasElement.setAttribute("height", _height + "px");
+    return canvasElement;
+}
+
+function drawCrossOnCanvas(_canvasElement) {
+    let canvasContext = _canvasElement.getContext("2d");
+    canvasContext.strokeStyle = "red";
+
+    canvasContext.beginPath(); // 描画開始準備
+    canvasContext.moveTo(0, 0); // 斜め右下線
+    canvasContext.lineTo(_canvasElement.clientWidth, _canvasElement.clientHeight);
+    canvasContext.moveTo(_canvasElement.clientWidth, 0); // 斜め左下線
+    canvasContext.lineTo(0, _canvasElement.clientHeight);
+    canvasContext.moveTo(_canvasElement.clientWidth / 2, 0); // 中央縦線
+    canvasContext.lineTo(_canvasElement.clientWidth / 2, _canvasElement.clientHeight);
+    canvasContext.moveTo(0, _canvasElement.clientHeight / 2); // 中央横線
+    canvasContext.lineTo(_canvasElement.clientWidth, _canvasElement.clientHeight / 2);
+
+    canvasContext.stroke(); // 描画
+}

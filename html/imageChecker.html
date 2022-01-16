@@ -104,44 +104,62 @@
             let padding = 50;
             let clockBGStartX = 0 + padding;
             let clockBGStartY = 0 + padding;
-            let clockHourNeedleStartX = clockBGStartX + clockBGWidth + padding;
-            let clockHourNeedleStartY = 0 + padding;
-            let clockMinutesNeedleStartX = clockHourNeedleStartX;
-            let clockMinutesNeedleStartY = clockHourNeedleStartY + clockHourHeight + padding;
-            let clockSecondsNeedleStartX = clockHourNeedleStartX;
-            let clockSecondsNeedleStartY = clockMinutesNeedleStartY + clockMinutesHeight + padding;
+            let clockHourStartX = clockBGStartX + clockBGWidth + padding;
+            let clockHourStartY = 0 + padding;
+            let clockMinutesStartX = clockHourStartX;
+            let clockMinutesStartY = clockHourStartY + clockHourHeight + padding;
+            let clockSecondsStartX = clockHourStartX;
+            let clockSecondsStartY = clockMinutesStartY + clockMinutesHeight + padding;
 
 
-            var canvasElement = document.createElement("canvas");
-            // canvasElement.setAttribute(attrStyle, "position: fixed; left: 0px; top: 0px; width: " + clockHourNeedleStartX + "px; height: " + (clockHourNeedleStartY + clockBGHeight) + "px; border: 1px solid silver;");
-            // canvasElement.setAttribute(attrStyle, "position: fixed; left: 0px; top: 0px; width: " + clockHourNeedleStartX + "px; height: " + (clockHourNeedleStartY + clockBGHeight) + "px; border: 1px solid silver;");
-            canvasElement.setAttribute(attrStyle, "position: fixed; left: " + clockBGStartX + "px; top: " + clockBGStartY + "px; border: 1px solid silver;");
-            // canvasElement.style.width = (clockBGStartX + clockBGWidth) + "px";
-            // canvasElement.style.height = (clockBGStartY + clockBGHeight) + "px";
+            // var canvasElement = document.createElement("canvas");
+            // // canvasElement.setAttribute(attrStyle, "position: fixed; left: 0px; top: 0px; width: " + clockHourNeedleStartX + "px; height: " + (clockHourNeedleStartY + clockBGHeight) + "px; border: 1px solid silver;");
+            // // canvasElement.setAttribute(attrStyle, "position: fixed; left: 0px; top: 0px; width: " + clockHourNeedleStartX + "px; height: " + (clockHourNeedleStartY + clockBGHeight) + "px; border: 1px solid silver;");
+            // canvasElement.setAttribute(attrStyle, "position: fixed; left: " + clockBGStartX + "px; top: " + clockBGStartY + "px; border: 1px solid silver;");
+            // // canvasElement.style.width = (clockBGStartX + clockBGWidth) + "px";
+            // // canvasElement.style.height = (clockBGStartY + clockBGHeight) + "px";
 
-            canvasElement.setAttribute("width", clockBGWidth);
-            canvasElement.setAttribute("height", clockBGHeight);
+            // canvasElement.setAttribute("width", clockBGWidth);
+            // canvasElement.setAttribute("height", clockBGHeight);
 
+            // 時計背景
+            let clockBGCanvas = createCanvasElement(clockBGStartX, clockBGStartY, clockBGWidth, clockBGHeight)
+            rootElement.appendChild(clockBGCanvas);
+            drawCrossOnCanvas(clockBGCanvas);
 
-            rootElement.appendChild(canvasElement);
-            console.log("canvasWidth: " + clockHourNeedleStartX);
-            console.log("canvasHeight: " + clockHourNeedleStartX);
-            // var canvas = document.getElementById("canvas");
-            // canvas.setAttribute(attrStyle, "position: fixed; left: 0px; top: 0px; width: " + clockHourNeedleStartX + "px; height: " + (clockHourNeedleStartY + clockBGHeight) + "px; border: 1px solid silver;");
-            var cContext = canvasElement.getContext("2d");
+            // 時計時針
+            let clockHourCanvas = createCanvasElement(clockHourStartX, clockHourStartY, clockHourWidth, clockHourHeight)
+            rootElement.appendChild(clockHourCanvas);
+            drawCrossOnCanvas(clockHourCanvas);
 
-            // let imgClockBG = new Image();
-            // imgClockBG.addEventListener("load", function () {
-            //     cContext.drawImage(imgClockBG, 0, 0, 100, 100);
-            // });
-            // imgClockBG.src = imgPathClockBG;
+            // 時計分針
+            let clockMinutesCanvas = createCanvasElement(clockMinutesStartX, clockMinutesStartY, clockMinutesWidth, clockMinutesHeight)
+            rootElement.appendChild(clockMinutesCanvas);
+            drawCrossOnCanvas(clockMinutesCanvas);
+
+            // 時計秒針
+            let clockSecondsCanvas = createCanvasElement(clockSecondsStartX, clockSecondsStartY, clockSecondsWidth, clockSecondsHeight)
+            rootElement.appendChild(clockSecondsCanvas);
+            drawCrossOnCanvas(clockSecondsCanvas);
+
+            // // console.log("canvasWidth: " + clockHourNeedleStartX);
+            // // console.log("canvasHeight: " + clockHourNeedleStartX);
+            // // var canvas = document.getElementById("canvas");
+            // // canvas.setAttribute(attrStyle, "position: fixed; left: 0px; top: 0px; width: " + clockHourNeedleStartX + "px; height: " + (clockHourNeedleStartY + clockBGHeight) + "px; border: 1px solid silver;");
+            // var cContext = canvasElement.getContext("2d");
+
+            // // let imgClockBG = new Image();
+            // // imgClockBG.addEventListener("load", function () {
+            // //     cContext.drawImage(imgClockBG, 0, 0, 100, 100);
+            // // });
+            // // imgClockBG.src = imgPathClockBG;
 
 
             // 計算した座標を元にスタイルの基礎を定義
             styleBGBase = "position: fixed; left: " + clockBGStartX + "px; top: " + clockBGStartY + "px; background-color: rgb(240,248,255); z-index: 0;";
-            styleHourBase = "position: fixed; left: " + clockHourNeedleStartX + "px; top: " + clockHourNeedleStartY + "px; background-color: rgb(240,248,255);";
-            styleMinutesBase = "position: fixed; left: " + clockMinutesNeedleStartX + "px; top: " + clockMinutesNeedleStartY + "px; background-color: rgb(240,248,255);";
-            styleSecondsBase = "position: fixed; left: " + clockSecondsNeedleStartX + "px; top: " + clockSecondsNeedleStartY + "px; background-color: rgb(240,248,255);";
+            styleHourBase = "position: fixed; left: " + clockHourStartX + "px; top: " + clockHourStartY + "px; background-color: rgb(240,248,255);";
+            styleMinutesBase = "position: fixed; left: " + clockMinutesStartX + "px; top: " + clockMinutesStartY + "px; background-color: rgb(240,248,255);";
+            styleSecondsBase = "position: fixed; left: " + clockSecondsStartX + "px; top: " + clockSecondsStartY + "px; background-color: rgb(240,248,255);";
 
             clockBG.setAttribute(attrStyle, styleBGBase);
             clockHour.setAttribute(attrStyle, styleHourBase);
@@ -161,22 +179,22 @@
             // var canvas = document.getElementById('canvas2');
             // var cContext = canvas.getContext('2d');
 
-            // 線の色
-            cContext.strokeStyle = 'red';
+            // // 線の色
+            // cContext.strokeStyle = 'red';
 
-            // パスの開始
-            cContext.beginPath();
-            // 1本目
-            cContext.moveTo(0, 0);
-            cContext.lineTo(clockBGWidth, clockBGHeight);
-            // 2本目
-            cContext.moveTo(clockBGWidth, 0);
-            cContext.lineTo(0, clockBGHeight);
-            // // 3本目
-            // cContext.moveTo(50, 120);
-            // cContext.lineTo(250, 120);
-            // 描画
-            cContext.stroke();
+            // // パスの開始
+            // cContext.beginPath();
+            // // 1本目
+            // cContext.moveTo(0, 0);
+            // cContext.lineTo(clockBGWidth, clockBGHeight);
+            // // 2本目
+            // cContext.moveTo(clockBGWidth, 0);
+            // cContext.lineTo(0, clockBGHeight);
+            // // // 3本目
+            // // cContext.moveTo(50, 120);
+            // // cContext.lineTo(250, 120);
+            // // 描画
+            // cContext.stroke();
 
 
 
