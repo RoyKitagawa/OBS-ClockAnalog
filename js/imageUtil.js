@@ -11,7 +11,7 @@ function getImageSize(_imgFilePath, _onComplete) {
 // 指定座標、指定サイズのキャンバスを生成して返す
 function createCanvasElement(_startX, _startY, _width, _height) {
     let canvasElement = document.createElement("canvas");
-    canvasElement.setAttribute("style", "position: fixed; left: " + _startX + "px; top: " + _startY + "px; border: 1px solid silver; z-index: 1");
+    canvasElement.setAttribute("style", "position: fixed; left: " + _startX + "px; top: " + _startY + "px; border: 1px solid silver; z-index: 1; overflow: scroll;");
     canvasElement.setAttribute("width", _width + "px");
     canvasElement.setAttribute("height", _height + "px");
     return canvasElement;

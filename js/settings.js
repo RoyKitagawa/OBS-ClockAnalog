@@ -82,3 +82,21 @@ const fileNameClockMinutes = "ClockMinutes.png"
 //
 // 初期値は「"ClockSeconds.png"」が指定されています
 const fileNameClockSeconds = "ClockSeconds.png"
+
+// 10. 画像ファイル名：時計針キャップ
+//
+// 時計に使用する画像ファイル名を変更したい場合に指定してください
+// 該当画像は上記「画像フォルダの相対パス」で指定フォルダ内にある前提となります
+//
+// 初期値は「"ClockNeedleCap.png"」が指定されています
+const fileNameClockNeedleCap = "ClockNeedleCap.png"
+
+// 11. 画像ファイル名：時計オーバーレイ画像
+//
+// 時計のガラスの光沢、模様などにご利用下さい
+//
+// オーバーレイ画像に使用する画像ファイル名を変更したい場合に指定してください
+// 該当画像は上記「画像フォルダの相対パス」で指定フォルダ内にある前提となります
+//
+// 初期値は「"ClockOverlay.png"」が指定されています
+const fileNameClockOverlay = "ClockOverlay.png"

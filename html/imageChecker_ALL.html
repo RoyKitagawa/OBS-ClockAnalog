@@ -20,6 +20,16 @@
         <img id="clockHour" style="display: none;">
         <img id="clockMinutes" style="display: none;">
         <img id="clockSec" style="display: none;">
+        <img id="clockNeedleCap" style="display: none;">
+        <img id="clockOverlay" style="display: none;">
+    </div>
+    <div id="textArea">
+        <p id="clockBGText" style="display: none;"></p>
+        <p id="clockHourText" style="display: none;"></p>
+        <p id="clockMinutesText" style="display: none;"></p>
+        <p id="clockSecText" style="display: none;"></p>
+        <p id="clockNeedleCapText" style="display: none;"></p>
+        <p id="clockOverlayText" style="display: none;"></p>
     </div>
 
     <script>
@@ -27,12 +37,23 @@
         const imgPathClockHour = imageDirPath + "/" + fileNameClockHour;
         const imgPathClockMinutes = imageDirPath + "/" + fileNameClockMinutes;
         const imgPathClockSeconds = imageDirPath + "/" + fileNameClockSeconds;
+        const imgPathClockNeedleCap = imageDirPath + "/" + fileNameClockNeedleCap;
+        const imgPathClockOverlay = imageDirPath + "/" + fileNameClockOverlay;
 
         var rootElement = document.getElementById("root");
         var clockBG = document.getElementById("clockBG");
         var clockSeconds = document.getElementById("clockSec");
         var clockMinutes = document.getElementById("clockMinutes");
         var clockHour = document.getElementById("clockHour");
+        var clockNeedleCap = document.getElementById("clockNeedleCap");
+        var clockOverlay = document.getElementById("clockOverlay");
+
+        var textClockBG = document.getElementById("clockBGText");
+        var textClockSeconds = document.getElementById("clockSecText");
+        var textClockMinutes = document.getElementById("clockMinutesText");
+        var textClockHour = document.getElementById("clockHourText");
+        var textClockNeedleCap = document.getElementById("clockNeedleCapText");
+        var textClockOverlay = document.getElementById("clockOverlayText");
 
         var clockBGWidth = -1;
         var clockBGHeight = -1;
@@ -42,6 +63,10 @@
         var clockMinutesHeight = -1;
         var clockSecondsWidth = -1;
         var clockSecondsHeight = -1;
+        var clockNeedleCapWidth = -1;
+        var clockNeedleCapHeight = -1;
+        var clockOverlayWidth = -1;
+        var clockOverlayHeight = -1;
 
         // 時計の処理の起点
         $(function () {
@@ -77,6 +102,20 @@
                 clockSecondsHeight = _element.naturalHeight;
                 if (isAllClockImageSizeSet()) startClockDisplay();
             });
+
+            // 時計針キャップ
+            getImageSize(imgPathClockNeedleCap, function (_element) {
+                clockNeedleCapWidth = _element.naturalWidth;
+                clockNeedleCapHeight = _element.naturalHeight;
+                if (isAllClockImageSizeSet()) startClockDisplay();
+            });
+
+            // 時計オーバーレイ
+            getImageSize(imgPathClockOverlay, function (_element) {
+                clockOverlayWidth = _element.naturalWidth;
+                clockOverlayHeight = _element.naturalHeight;
+                if (isAllClockImageSizeSet()) startClockDisplay();
+            });
         }
 
         // 時計の初回描画用の設定
@@ -86,12 +125,17 @@
             let padding = 50;
             let clockBGStartX = 0 + padding;
             let clockBGStartY = 0 + padding;
-            let clockHourStartX = clockBGStartX + clockBGWidth + padding;
-            let clockHourStartY = 0 + padding;
-            let clockMinutesStartX = clockHourStartX;
+            let clockOverlayStartX = clockBGStartX + clockBGWidth + padding;
+            let clockOverlayStartY = clockBGStartY;
+
+            let clockHourStartX = clockBGStartX;
+            let clockHourStartY = clockBGStartY + clockBGHeight + padding;
+            let clockMinutesStartX = clockBGStartX;
             let clockMinutesStartY = clockHourStartY + clockHourHeight + padding;
-            let clockSecondsStartX = clockHourStartX;
+            let clockSecondsStartX = clockBGStartX;
             let clockSecondsStartY = clockMinutesStartY + clockMinutesHeight + padding;
+            let clockNeedleCapStartX = clockHourStartX + clockHourWidth + padding;
+            let clockNeedleCapStartY = clockHourStartY;
 
             // 画像描画処理
             let attrStyle = "style";
@@ -117,6 +161,30 @@
                 "position: fixed; left: " + clockSecondsStartX + "px; top: " + clockSecondsStartY + "px; background-color: rgb(240,248,255); z-index: 0;");
             clockSeconds.setAttribute(attrSrc, imgPathClockSeconds);
 
+            clockNeedleCap.setAttribute(
+                attrStyle,
+                "position: fixed; left: " + clockNeedleCapStartX + "px; top: " + clockNeedleCapStartY + "px; background-color: rgb(240,248,255); z-index: 0;");
+            clockNeedleCap.setAttribute(attrSrc, imgPathClockNeedleCap);
+
+            clockOverlay.setAttribute(
+                attrStyle,
+                "position: fixed; left: " + clockOverlayStartX + "px; top: " + clockOverlayStartY + "px; background-color: rgb(240,248,255); z-index: 0;");
+            clockOverlay.setAttribute(attrSrc, imgPathClockOverlay);
+
+            // 画像ファイル名を表す文字列用
+            textClockBG.innerText = imgPathClockBG;
+            textClockBG.setAttribute(attrStyle, "position: fixed; left: " + clockBGStartX + "px; top: " + (clockBGStartY + clockBGHeight) + "px; font-size: " + 16 + "px; margin: 0px;");
+            textClockSeconds.innerText = imgPathClockSeconds;
+            textClockSeconds.setAttribute(attrStyle, "position: fixed; left: " + clockSecondsStartX + "px; top: " + (clockSecondsStartY + clockSecondsHeight) + "px; font-size: " + 16 + "px; margin: 0px;");
+            textClockMinutes.innerText = imgPathClockMinutes;
+            textClockMinutes.setAttribute(attrStyle, "position: fixed; left: " + clockMinutesStartX + "px; top: " + (clockMinutesStartY + clockMinutesHeight) + "px; font-size: " + 16 + "px; margin: 0px;");
+            textClockHour.innerText = imgPathClockHour;
+            textClockHour.setAttribute(attrStyle, "position: fixed; left: " + clockHourStartX + "px; top: " + (clockHourStartY + clockHourHeight) + "px; font-size: " + 16 + "px; margin: 0px;");
+            textClockNeedleCap.innerText = imgPathClockNeedleCap;
+            textClockNeedleCap.setAttribute(attrStyle, "position: fixed; left: " + clockNeedleCapStartX + "px; top: " + (clockNeedleCapStartY + clockNeedleCapHeight) + "px; font-size: " + 16 + "px; margin: 0px;");
+            textClockOverlay.innerText = imgPathClockOverlay;
+            textClockOverlay.setAttribute(attrStyle, "position: fixed; left: " + clockOverlayStartX + "px; top: " + (clockOverlayStartY + clockOverlayHeight) + "px; font-size: " + 16 + "px; margin: 0px;");
+
             // 以下キャンバス（線）描画用処理
             // 時計背景
             let clockBGCanvas = createCanvasElement(clockBGStartX, clockBGStartY, clockBGWidth, clockBGHeight)
@@ -137,6 +205,17 @@
             let clockSecondsCanvas = createCanvasElement(clockSecondsStartX, clockSecondsStartY, clockSecondsWidth, clockSecondsHeight)
             rootElement.appendChild(clockSecondsCanvas);
             drawCrossOnCanvas(clockSecondsCanvas);
+
+            // 時計針キャップ
+            let clockNeedleCapCanvas = createCanvasElement(clockNeedleCapStartX, clockNeedleCapStartY, clockNeedleCapWidth, clockNeedleCapHeight)
+            rootElement.appendChild(clockNeedleCapCanvas);
+            drawCrossOnCanvas(clockNeedleCapCanvas);
+
+            // 時計オーバーレイ
+            let clockOverlayCanvas = createCanvasElement(clockOverlayStartX, clockOverlayStartY, clockOverlayWidth, clockOverlayHeight)
+            rootElement.appendChild(clockOverlayCanvas);
+            drawCrossOnCanvas(clockOverlayCanvas);
+
         }
 
         // 全ての画像サイズが取得済みか確認する
@@ -144,7 +223,9 @@
             return clockBGWidth >= 0 && clockBGHeight >= 0
                 && clockHourWidth >= 0 && clockHourHeight >= 0
                 && clockMinutesWidth >= 0 && clockMinutesHeight >= 0
-                && clockSecondsWidth >= 0 && clockSecondsHeight >= 0;
+                && clockSecondsWidth >= 0 && clockSecondsHeight >= 0
+                && clockNeedleCapWidth >= 0 && clockNeedleCapHeight >= 0
+                && clockOverlayWidth >= 0 && clockOverlayHeight >= 0;
         }
 
 

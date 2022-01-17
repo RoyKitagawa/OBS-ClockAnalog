@@ -22,6 +22,8 @@
         <img id="clockHour" style="display: none;">
         <img id="clockMinutes" style="display: none;">
         <img id="clockSec" style="display: none;">
+        <img id="clockNeedleCap" style="display: none;">
+        <img id="clockOverlay" style="display: none;">
     </div>
 
     <script>
@@ -29,11 +31,15 @@
         const imgPathClockHour = imageDirPath + "/" + fileNameClockHour;
         const imgPathClockMinutes = imageDirPath + "/" + fileNameClockMinutes;
         const imgPathClockSeconds = imageDirPath + "/" + fileNameClockSeconds;
+        const imgPathClockNeedleCap = imageDirPath + "/" + fileNameClockNeedleCap;
+        const imgPathClockOverlay = imageDirPath + "/" + fileNameClockOverlay;
 
         var clockBG = document.getElementById("clockBG");
         var clockSeconds = document.getElementById("clockSec");
         var clockMinutes = document.getElementById("clockMinutes");
         var clockHour = document.getElementById("clockHour");
+        var clockNeedleCap = document.getElementById("clockNeedleCap");
+        var clockOverlay = document.getElementById("clockOverlay");
 
         var clockBGWidth = -1;
         var clockBGHeight = -1;
@@ -43,12 +49,18 @@
         var clockMinutesHeight = -1;
         var clockSecondsWidth = -1;
         var clockSecondsHeight = -1;
+        var clockNeedleCapWidth = -1;
+        var clockNeedleCapHeight = -1;
+        var clockOverlayWidth = -1;
+        var clockOverlayHeight = -1;
 
         var attrStyle = "style";
         var styleBGBase = "";
         var styleSecondsBase = "";
         var styleMinutesBase = "";
         var styleHourBase = "";
+        var styleNeedleCapBase = "";
+        var styleOverlayBase = "";
 
         var rotPerHour = 360 / 12;
         var rotPerMinutes = 360 / 60;
@@ -63,6 +75,8 @@
             clockHour.setAttribute("src", imgPathClockHour);
             clockMinutes.setAttribute("src", imgPathClockMinutes);
             clockSeconds.setAttribute("src", imgPathClockSeconds);
+            clockNeedleCap.setAttribute("src", imgPathClockNeedleCap);
+            clockOverlay.setAttribute("src", imgPathClockOverlay);
         });
 
         // 時計の描画更新処理
@@ -140,6 +154,20 @@
                 clockSecondsHeight = _element.naturalHeight;
                 if (isAllClockImageSizeSet()) startClockDisplay();
             });
+
+            // 時計針キャップ
+            getImageSize(imgPathClockNeedleCap, function (_element) {
+                clockNeedleCapWidth = _element.naturalWidth;
+                clockNeedleCapHeight = _element.naturalHeight;
+                if (isAllClockImageSizeSet()) startClockDisplay();
+            });
+
+            // 時計オーバーレイ
+            getImageSize(imgPathClockOverlay, function (_element) {
+                clockOverlayWidth = _element.naturalWidth;
+                clockOverlayHeight = _element.naturalHeight;
+                if (isAllClockImageSizeSet()) startClockDisplay();
+            });
         }
 
         // 全ての画像サイズが取得済みか確認する
@@ -147,7 +175,9 @@
             return clockBGWidth >= 0 && clockBGHeight >= 0
                 && clockHourWidth >= 0 && clockHourHeight >= 0
                 && clockMinutesWidth >= 0 && clockMinutesHeight >= 0
-                && clockSecondsWidth >= 0 && clockSecondsHeight >= 0;
+                && clockSecondsWidth >= 0 && clockSecondsHeight >= 0
+                && clockNeedleCapWidth >= 0 && clockNeedleCapHeight >= 0
+                && clockOverlayWidth >= 0 && clockOverlayHeight >= 0;
         }
 
         // 時計の初回描画用の設定
@@ -165,6 +195,10 @@
             let minutesTop = clockHeightHalf - (clockMinutesHeight / 2);
             let secondsLeft = clockWidthHalf - (clockSecondsWidth / 2);
             let secondsTop = clockHeightHalf - (clockSecondsHeight / 2);
+            let needleCapLeft = clockWidthHalf - (clockNeedleCapWidth / 2);
+            let needleCapTop = clockHeightHalf - (clockNeedleCapHeight / 2);
+            let overlayLeft = clockWidthHalf - (clockOverlayWidth / 2);
+            let overlayTop = clockHeightHalf - (clockOverlayHeight / 2);
 
 
             // サイズ・座標移動値計算用
@@ -181,25 +215,39 @@
             let minMinutesTop = clockHeightHalf - minutesNeedleSizeHalf;
             let minSecondsTop = clockHeightHalf - secondsNeedleSizeHalf;
 
+            let minNeedleCapLeft = clockWidthHalf - clockNeedleCapWidth / 2;
+            let minNeedleCapTop = clockHeightHalf - clockNeedleCapHeight / 2;
+            let minOverlayLeft = clockWidthHalf - clockOverlayWidth / 2;
+            let minOverlayTop = clockHeightHalf - clockOverlayHeight / 2;
+
+
             // 縦横の最小値計算（値がマイナスの場合は見切れるため全体的に座標をずらす）
             var minLeft = bgLeft < minHourLeft ? bgLeft
                 : minHourLeft < minMinutesLeft ? minHourLeft
-                    : minMinutesLeft < minSecondsLeft ? minMinutesLeft : minSecondsLeft;
+                    : minMinutesLeft < minSecondsLeft ? minMinutesLeft
+                        : minSecondsLeft < minNeedleCapLeft ? minSecondsLeft
+                            : minNeedleCapLeft < minOverlayLeft ? minNeedleCapLeft : minOverlayLeft;
             var minTop = bgTop < minHourTop ? bgTop
                 : minHourTop < minMinutesTop ? minHourTop
-                    : minMinutesTop < minSecondsTop ? minMinutesTop : minSecondsTop;
+                    : minMinutesTop < minSecondsTop ? minMinutesTop
+                        : minSecondsTop < minNeedleCapTop ? minSecondsTop
+                            : minNeedleCapTop < minOverlayTop ? minNeedleCapTop : minOverlayTop;
 
             if (minLeft < 0) {
                 bgLeft -= minLeft;
                 hourLeft -= minLeft;
                 minutesLeft -= minLeft;
                 secondsLeft -= minLeft;
+                needleCapLeft -= minLeft;
+                overlayLeft -= minLeft;
             }
             if (minTop < 0) {
                 bgTop -= minTop;
                 hourTop -= minTop;
                 minutesTop -= minTop;
                 secondsTop -= minTop;
+                needleCapTop -= minTop;
+                overlayTop -= minTop;
             }
 
             // 計算した座標を元にスタイルの基礎を定義
@@ -207,9 +255,13 @@
             styleHourBase = "position: fixed; left: " + hourLeft + "px; top: " + hourTop + "px; ";
             styleMinutesBase = "position: fixed; left: " + minutesLeft + "px; top: " + minutesTop + "px; ";
             styleSecondsBase = "position: fixed; left: " + secondsLeft + "px; top: " + secondsTop + "px; ";
+            styleNeedleCapBase = "position: fixed; left: " + needleCapLeft + "px; top: " + needleCapTop + "px; ";
+            styleOverlayBase = "position: fixed; left: " + overlayLeft + "px; top: " + overlayTop + "px; ";
 
             // 時計背景は時間毎の角度計算が不要なため事前にstyle確定する
             clockBG.setAttribute(attrStyle, styleBGBase);
+            clockNeedleCap.setAttribute(attrStyle, styleNeedleCapBase);
+            clockOverlay.setAttribute(attrStyle, styleOverlayBase);
 
             // 時計の更新処理
             setInterval(function () {
