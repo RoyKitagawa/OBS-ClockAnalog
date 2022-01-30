@@ -17,6 +17,8 @@
 </head>
 
 <body>
+    <div id="root"></div>
+
     <div id="clockArea">
         <img id="clockBG" style="display: none;">
         <img id="clockHour" style="display: none;">
@@ -34,6 +36,7 @@
         const imgPathClockNeedleCap = imageDirPath + "/" + fileNameClockNeedleCap;
         const imgPathClockOverlay = imageDirPath + "/" + fileNameClockOverlay;
 
+        var rootElement = document.getElementById("root");
         var clockBG = document.getElementById("clockBG");
         var clockSeconds = document.getElementById("clockSec");
         var clockMinutes = document.getElementById("clockMinutes");
@@ -82,7 +85,6 @@
         // 時計の描画更新処理
         function updateClockDisplay() {
             let date = getLocalDate(timeDiffsInHour);
-            // date.setMinutes(10);
             clockHour.setAttribute(attrStyle, styleHourBase + "transform:rotate("
                 + (hourNeedleMovePattern == 0 ? calcHourNeedleRotSmooth(date) : calcBasicNeedleRot(date.getHours() % 12, 12))
                 + "deg);");
@@ -263,11 +265,23 @@
             clockNeedleCap.setAttribute(attrStyle, styleNeedleCapBase);
             clockOverlay.setAttribute(attrStyle, styleOverlayBase);
 
+            // // 以下キャンバス（線）描画用処理
+            // // 時計背景
+            // let clockBGCanvas = createCanvasElement(bgLeft, bgTop, clockBGWidth, clockBGHeight)
+            // rootElement.appendChild(clockBGCanvas);
+            // drawCrossOnCanvas4Clock(clockBGCanvas);
+
             // 時計の更新処理
             setInterval(function () {
                 updateClockDisplay();
             }, 1);
             updateClockDisplay();
+        }
+
+        function test() {
+            // this is some sample
+            // 春香さんキラ＆下ペロ＆汗かき＆躍動感
+            // 
         }
     </script>
 
