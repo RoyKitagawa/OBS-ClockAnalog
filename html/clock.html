@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
 
+<!-- 
+    【このファイルの用途について】
+    現在時刻に合わせ、動く時計を表示するためのふHTMLファイル
+    時差はsettings.jsファイル内の「timeDiffsInHour」の値が反映されます
+
+    時計用の画像は同じくsettings.jsで指定された「imageDirPath」のフォルダ内にある画像が反映されます
+-->
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -265,23 +273,11 @@
             clockNeedleCap.setAttribute(attrStyle, styleNeedleCapBase);
             clockOverlay.setAttribute(attrStyle, styleOverlayBase);
 
-            // // 以下キャンバス（線）描画用処理
-            // // 時計背景
-            // let clockBGCanvas = createCanvasElement(bgLeft, bgTop, clockBGWidth, clockBGHeight)
-            // rootElement.appendChild(clockBGCanvas);
-            // drawCrossOnCanvas4Clock(clockBGCanvas);
-
             // 時計の更新処理
             setInterval(function () {
                 updateClockDisplay();
             }, 1);
             updateClockDisplay();
-        }
-
-        function test() {
-            // this is some sample
-            // 春香さんキラ＆下ペロ＆汗かき＆躍動感
-            // 
         }
     </script>
 

@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
 
+<!-- 
+    【このファイルの用途について】
+    各種時計用画像の中心点が適切な位置に確認する用のHTMLファイル
+    settings.jsで指定された「imageDirPath」のフォルダ内にある
+    同じくsettings.jsで指定された「fileNameClockBG」に記述されている時計の盤面背景の画像を表示します
+
+    画像上に中央から外側に広がる12本の赤線が表示されますが、それらはそれぞれ1時～12時の時の時針の傾きを表しています
+-->
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -73,7 +82,7 @@
             // 時計背景
             let clockBGCanvas = createCanvasElement(clockBGStartX, clockBGStartY, clockBGWidth, clockBGHeight)
             rootElement.appendChild(clockBGCanvas);
-            drawCrossOnCanvas(clockBGCanvas);
+            drawCrossOnCanvas4Clock(clockBGCanvas);
         }
 
     </script>
