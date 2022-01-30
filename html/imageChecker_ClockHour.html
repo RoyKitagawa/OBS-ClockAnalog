@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!-- 
+    【このファイルの用途について】
+    各種時計用画像の中心点が適切な位置に確認する用のHTMLファイル
+    settings.jsで指定された「imageDirPath」のフォルダ内にある
+    同じくsettings.jsで指定された「fileNameClockHour」に記述されている時針の画像を表示します
+
+
+    画像上に4本の赤線が表示されますが、それらが交差する地点が画像の中央となります
+    針はこの地点を時計の中央とし、その地点を基準に回ります
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="./../lib/jquery-3.6.0.min.js"></script>
+    <script src="./../js/imageUtil.js"></script>
+    <script src="./../js/settings.js"></script>
+
+</head>
+
+<body>
+    <div id="root"></div>
+    <div id="clockArea">
+        <img id="clockHour" style="display: none;">
+    </div>
+    <div id="textArea">
+        <p id="clockSecText" style="display: none;"></p>
+    </div>
+
+    <script>
+        const imgPathClockHour = imageDirPath + "/" + fileNameClockHour;
+
+        var rootElement = document.getElementById("root");
+        var clockHour = document.getElementById("clockHour");
+
+        var textClockHour = document.getElementById("clockSecText");
+
+        var clockHourWidth = -1;
+        var clockHourHeight = -1;
+
+        // 時計の処理の起点
+        $(function () {
+            initImgSizeInfo();
+        });
+
+        // 各画像サイズ取得処理（座標計算に使うため、描画処理の前に必要）
+        function initImgSizeInfo() {
+
+            // 時計針：時間
+            getImageSize(imgPathClockHour, function (_element) {
+                clockHourWidth = _element.naturalWidth;
+                clockHourHeight = _element.naturalHeight;
+                startClockDisplay();
+            });
+        }
+
+        // 時計の初回描画用の設定
+        function startClockDisplay() {
+
+            // 画像配置用計算
+            let padding = 50;
+            let clockHourStartX = 0 + padding;
+            let clockHourStartY = 0 + padding;
+
+            // 画像描画処理
+            let attrStyle = "style";
+            let attrSrc = "src";
+
+            clockHour.setAttribute(
+                attrStyle,
+                "position: fixed; left: " + clockHourStartX + "px; top: " + clockHourStartY + "px; background-color: rgb(240,248,255); z-index: 0;");
+            clockHour.setAttribute(attrSrc, imgPathClockHour);
+
+            // 画像ファイル名を表す文字列用
+            textClockHour.innerText = imgPathClockHour;
+            textClockHour.setAttribute(attrStyle, "position: fixed; left: " + clockHourStartX + "px; top: " + (clockHourStartY + clockHourHeight) + "px; font-size: " + 16 + "px; margin: 0px;");
+
+            // 以下キャンバス（線）描画用処理
+            // 時計時針
+            let clockHourCanvas = createCanvasElement(clockHourStartX, clockHourStartY, clockHourWidth, clockHourHeight)
+            rootElement.appendChild(clockHourCanvas);
+            drawCrossOnCanvas(clockHourCanvas);
+        }
+    </script>
+</body>
+
+</html>
