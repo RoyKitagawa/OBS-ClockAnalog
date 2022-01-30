@@ -1,5 +1,3 @@
- For English ReadMe, please view [README_EN.md](./README_EN.md)
-
 <a id="anchor1"></a>
 # OBS着せ替えアナログ時計の概要  
 こちらはOBSを用いた配信などで配信画面に現在の時刻を表示するためのアナログ時計となっています  
@@ -77,7 +75,88 @@
   
 <a id="anchor5"></a>
 ## 時計の着せ替えについて（独自の着せ替え画像を使用する場合）    　
+本ソフトウェアではお好きな時計の画像を用意していただくことで簡単に着せ替えを行うことが可能です。   
+その際、いくつかの決まり事があるため、必要なもの及び手順についてご紹介します。  
+
+### 独自の着せ替えをする場合に必要なもの
+着せ替えをする際、以下の6つの画像ファイルが必要となります。    
+また、ファイル名は必ず指定されたものと同名にしてください。  
+※もしご用意された画像がうまく表示されない場合、誤字脱字や大文字小文字のズレ等が発生している可能性もありますのでご注意ください。  
+※時計のデザイン的に一部画像が不要な場合も、必ず同名の透過画像を配置してください（ファイルが存在しない場合、エラーが出てしまう可能性があります）   
   
+![image](https://user-images.githubusercontent.com/78025620/151688647-2906b6e3-3e8b-4246-aff1-726ca7854315.png)  
+  
+1. ClockBG.png: 時計の盤面となる画像
+2. ClockHour.png: 時計の時針画像
+3. ClockMinutes.png: 時計の分針画像
+4. ClockSeconds.png: 時計の秒針画像
+5. ClockNeedleCap.png: 時計の中心、時計の針の固定部分にかぶせるように表示される画像
+5. ClockOverlay.png: 時計の前面の蓋部分。ガラスの表現や模様付け用。
+  
+### 独自の着せ替え画像のルールについて
+また、今回画像差し替えて簡単に着せ替えをできるように、画像を作るにあたっていくつかのルールがあります。  
+こちらを準拠されていない場合、着せ替え画像が適切に表示されない可能性があるためご注意ください。  
+
+1. 各種画像は作成されたサイズのまま原寸大で表示されます  
+2. 時計盤面画像（```ClockBG.png```）、及び時計のオーバーレイ画像（```ClockOverlay.png```）の中心は必ず盤面の中心にくるようにしてください  
+3. 時計の各種針画像（```ClockHour.png```、```ClockMinutes.png```、```ClockSeconds.png```）の中心は必ず針が回転する起点の場所にくるようにしてください（ここを軸に針が回転します）  
+  
+### 画像の中心点の確認方法について
+ですが画像を作成する際、画像の中心部分がどこにあるか分かりづらいことがあると思います。  
+そのため本ソフトウェアではいくつかの画像の中心点確認用のHTMLファイルをご用意しております。  
+  
+![image](https://user-images.githubusercontent.com/78025620/151689033-49da4c4d-f13e-41fc-8bd7-e94123ac2279.png)  
+  
+```html```フォルダ内にはOBS上で指定するための```clock.html```ファイル以外にもいくつかのHTMLファイルが存在します。    
+それらはダブルクリックすることでブラウザ上で表示することができますので、動作確認などを行う際にご活用ください。  
+※各種ファイルは実際にOBS上で表示されるフォルダ内の画像（初期設定では```images/clock```フォルダ）が参照されます。       
+  
+#### clock.html
+OBS上で実際に指定する用のファイルですが、ダブルクリックすることでブラウザ上で動く時計を簡単に確認することができます。  
+
+![image](https://user-images.githubusercontent.com/78025620/151689119-04686d21-1c13-429d-96fd-24b07aa0c290.png)  
+
+#### imageChecker_ALL.html
+各種画像の中心点が確認できます。  
+  
+![image](https://user-images.githubusercontent.com/78025620/151689151-086ddf17-61fe-408d-a662-753ec2cd1c2e.png)    
+  
+#### imageChecker_ClockBG.html
+時計の盤面背景画像の中心点が確認できます  
+※表示する画像が大きすぎて```imageChecker_ALL.html```では見切れてしまう場合などにご利用ください  
+  
+![image](https://user-images.githubusercontent.com/78025620/151689178-6ab58b53-c4dc-4db4-8163-065ec874cebc.png)  
+  
+#### imageChecker_ClockHour.html
+時計の時針画像の中心点が確認できます  
+※表示する画像が大きすぎて```imageChecker_ALL.html```では見切れてしまう場合などにご利用ください  
+  
+![image](https://user-images.githubusercontent.com/78025620/151689188-30d3b321-cc6c-4112-9d7c-735ae69cebbb.png)  
+     
+#### imageChecker_ClockMinutes.html
+時計の分針画像の中心点が確認できます  
+※表示する画像が大きすぎて```imageChecker_ALL.html```では見切れてしまう場合などにご利用ください  
+  
+![image](https://user-images.githubusercontent.com/78025620/151689203-07109fdf-9b1e-421f-967b-0a96f0dced89.png)  
+     
+#### imageChecker_ClockNeedleCap.html
+時計の針キャップ画像の中心点が確認できます  
+※表示する画像が大きすぎて```imageChecker_ALL.html```では見切れてしまう場合などにご利用ください  
+  
+![image](https://user-images.githubusercontent.com/78025620/151689225-b45e498b-de41-4c2e-85f1-ff03c901cef6.png)  
+          
+#### imageChecker_ClockOverlay.html
+時計のオーバーレイ画像の中心点が確認できます  
+※表示する画像が大きすぎて```imageChecker_ALL.html```では見切れてしまう場合などにご利用ください  
+  
+![image](https://user-images.githubusercontent.com/78025620/151689241-5e5882f0-5f37-470c-86c0-a12f3c2fc407.png)
+     
+#### imageChecker_ClockSeconds.html
+時計の秒針画像の中心点が確認できます  
+※表示する画像が大きすぎて```imageChecker_ALL.html```では見切れてしまう場合などにご利用ください  
+  
+![image](https://user-images.githubusercontent.com/78025620/151689262-7bed6a08-e1fe-472e-a4c4-2041921f41f9.png)  
+       
 <a id="anchor6"></a>
 ## 針の進め方の設定について    　
 本ソフトウェアでは各種針の進め方を以下の2種類から選ぶことができます  
